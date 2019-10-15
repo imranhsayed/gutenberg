@@ -74,7 +74,7 @@ export class ImageEdit extends React.Component {
 		this.onImagePressed = this.onImagePressed.bind( this );
 		this.onClearSettings = this.onClearSettings.bind( this );
 		this.onFocusCaption = this.onFocusCaption.bind( this );
-		this.updateAlignment = this.updateAlignment.bind(this)
+		this.updateAlignment = this.updateAlignment.bind( this );
 	}
 
 	componentDidMount() {
@@ -170,7 +170,7 @@ export class ImageEdit extends React.Component {
 	}
 
 	updateAlignment( nextAlign ) {
-		this.props.setAttributes( { align: nextAlign } )
+		this.props.setAttributes( { align: nextAlign } );
 	}
 
 	onSetLinkDestination( href ) {
@@ -333,7 +333,7 @@ export class ImageEdit extends React.Component {
 							);
 
 							return (
-								<View style={ { flex: 1, alignSelf: alignToFlex[align] } } >
+								<View style={ { flex: 1, alignSelf: alignToFlex[ align ] } } >
 									{ ! imageWidthWithinContainer &&
 										<View style={ [ styles.imageContainer, { height: imageContainerHeight } ] } >
 											{ this.getIcon( false ) }

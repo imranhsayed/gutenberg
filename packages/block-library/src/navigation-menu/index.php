@@ -92,13 +92,13 @@ function register_block_core_navigation_menu() {
 	$block_content = file_get_contents ( dirname( __FILE__ ) . '/../../../packages/block-library/src/navigation-menu/block.json' );
 	if ( ! $block_content ) {
 		throw new Error(
-			'There is not a block.json file defined for the block!'
+			'block.json file not found'
 		);
 	}
 	$block_definition = json_decode( $block_content, true );
 	if( is_null( $block_definition ) ) {
 		throw new Error(
-			'There is not possible to parse the block.json file!'
+			'Unable to parse block.json file'
 		);
 	}
 

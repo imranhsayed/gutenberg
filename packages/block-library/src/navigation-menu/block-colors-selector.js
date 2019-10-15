@@ -18,9 +18,9 @@ import { ColorPaletteControl, ContrastChecker } from '@wordpress/block-editor';
  * @constructor
  */
 const ColorSelectorIcon = ( { style } ) =>
-	<div className="block-editor-block-colors-selector__icon-container">
+	<div className="block-library-colors-selector__icon-container">
 		<div
-			className="colors-selector__state-selection wp-block-navigation-menu-item"
+			className="block-library-colors-selector__state-selection wp-block-navigation-menu-item"
 			style={ style }
 		>
 			{ __( 'Aa' ) }
@@ -30,11 +30,12 @@ const ColorSelectorIcon = ( { style } ) =>
 /**
  * Renders the Colors Selector Toolbar with the icon button.
  *
+ * @param {object} style Colors style object.
  * @param {function} onToggle Callback open/close Dropdown.
  * @param {bool} isOpen True is the color settings dropdown is open. Otherwise, False.
  * @return {*} React toggle button component.
  */
-const renderToggle = ( style ) => ( { onToggle, isOpen } ) => {
+const renderToggleComponent = ( style ) => ( { onToggle, isOpen } ) => {
 	const openOnArrowDown = ( event ) => {
 		if ( ! isOpen && event.keyCode === DOWN ) {
 			event.preventDefault();
@@ -46,7 +47,7 @@ const renderToggle = ( style ) => ( { onToggle, isOpen } ) => {
 	return (
 		<Toolbar>
 			<IconButton
-				className="components-icon-button components-toolbar__control block-editor-block-colors-selector__toggle"
+				className="components-icon-button components-toolbar__control block-library-colors-selector__toggle"
 				label={ __( 'Open Colors Selector' ) }
 				onClick={ onToggle }
 				onKeyDown={ openOnArrowDown }
@@ -78,10 +79,8 @@ const renderContent = ( { backgroundColor, textColor, onColorChange = noop } ) =
 			</div>
 
 			<ContrastChecker
-				{ ...{
-					textColor: textColor.color,
-					backgroundColor: backgroundColor.color,
-				} }
+				textColor={ textColor.color }
+				backgroundColor={ backgroundColor.color }
 				isLargeText={ false }
 			/>
 		</>
@@ -91,8 +90,8 @@ const renderContent = ( { backgroundColor, textColor, onColorChange = noop } ) =
 export default ( { style, className, ...colorControlProps } ) =>
 	<Dropdown
 		position="bottom right"
-		className={ classnames( 'block-editor-block-colors-selector', className ) }
-		contentClassName="block-editor-block-colors-selector__popover"
-		renderToggle={ renderToggle( style ) }
+		className={ classnames( 'block-library-colors-selector', className ) }
+		contentClassName="block-library-colors-selector__popover"
+		renderToggle={ renderToggleComponent( style ) }
 		renderContent={ renderContent( colorControlProps ) }
 	/>;

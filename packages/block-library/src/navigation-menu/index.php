@@ -16,54 +16,68 @@
  */
 function render_block_navigation_menu( $attributes, $content, $block ) {
 	// Add CSS classes and inline styles.
-	$css_classes = [];
+	$bg_color_css_classes = '';
 	if ( array_key_exists('backgroundColor', $attributes ) ) {
-		$css_classes[] = 'has-background-color';
+		$bg_color_css_classes .= ' has-background-color';
 	}
-
-	if ( array_key_exists('textColor', $attributes ) ) {
-		$css_classes[] = 'has-text-color';
-	}
-
 	if ( array_key_exists('backgroundColorCSSClass', $attributes ) ) {
-		$css_classes[] = $attributes['backgroundColorCSSClass'];
+		$bg_color_css_classes .= " {$attributes['backgroundColorCSSClass']}";
+	}
+	$bg_color_css_classes = trim( $bg_color_css_classes );
+
+	$text_color_css_classes = '';
+	if ( array_key_exists('textColor', $attributes ) ) {
+		$text_color_css_classes .= ' has-text-color';
 	}
 
 	if ( array_key_exists('textColorCSSClass', $attributes ) ) {
-		$css_classes[] = $attributes['textColorCSSClass'];
+		$text_color_css_classes .= " ${attributes['textColorCSSClass']}";
 	}
+	$text_color_css_classes = trim( $text_color_css_classes );
 
-	$inline_styles = [];
+
+	$bg_inline_styles = '';
 	if ( array_key_exists('customBackgroundColor', $attributes ) ) {
-		$inline_styles[] = "background-color: ${attributes['customBackgroundColor']};";
+		$bg_inline_styles = "background-color: ${attributes['customBackgroundColor']};";
 	} elseif ( array_key_exists('backgroundColorValue', $attributes ) ) {
-		$inline_styles[] = "background-color: ${attributes['backgroundColorValue']};";
+		$bg_inline_styles = "background-color: ${attributes['backgroundColorValue']};";
 	}
 
+	$text_inline_styles = '';
 	if ( array_key_exists('textColorValue', $attributes ) ) {
-		$inline_styles[] = "color: ${attributes['textColorValue']};";
+		$text_inline_styles = " color: ${attributes['textColorValue']};";
 	} elseif ( array_key_exists('customTextColor', $attributes ) ) {
-		$inline_styles[] = "color: ${attributes['customTextColor']};";
+		$text_inline_styles = " color: ${attributes['customTextColor']};";
 	}
 
-	$css_classes = implode( ' ', $css_classes );
-	$inline_styles = implode( ' ', $inline_styles );
-
-	return '<nav class="wp-block-navigation-menu">' . build_navigation_menu_html( $block, $css_classes, $inline_styles ) . '</nav>';
+	return
+		'<nav class="wp-block-navigation-menu">' .
+			build_navigation_menu_html(
+				$block,
+				$bg_color_css_classes,
+				$text_color_css_classes,
+				$bg_inline_styles,
+				$text_inline_styles
+			) .
+		'</nav>';
 }
 
 /**
  * Walks the inner block structure and returns an HTML list for it.
  *
- * @param array $block The block.
+ * @param {array}   $block          The block.
+ * @param {string}  $bg_css         Background color CSS classes.
+ * @param {string}  $text_css       Text color CSS classes.
+ * @param {string}  $bg_styles      Background color inline styles.
+ * @param {string}  $text_styles    Text color inline styles.
  *
  * @return string Returns  an HTML list from innerBlocks.
  */
-function build_navigation_menu_html( $block, $css_classes, $inline_styles ) {
+function build_navigation_menu_html( $block, $bg_css, $text_css, $bg_styles, $text_styles ) {
 	$html = '';
 	foreach ( (array) $block['innerBlocks'] as $key => $menu_item ) {
-		$css_classes = "wp-block-navigation-menu-item ${css_classes}";
-		$html .= "<li style='${inline_styles}'><div class='${css_classes}'><a class='wp-block-navigation-menu-link'";
+		$html .= "<li style='$bg_styles $text_styles' class='wp-block-navigation-menu-item $bg_css'>" .
+			"<a class='wp-block-navigation-menu-link $text_css'";
 		if ( isset( $menu_item['attrs']['destination'] ) ) {
 			$html .= ' href="' . $menu_item['attrs']['destination'] . '"';
 		}
@@ -74,10 +88,10 @@ function build_navigation_menu_html( $block, $css_classes, $inline_styles ) {
 		if ( isset( $menu_item['attrs']['label'] ) ) {
 			$html .= $menu_item['attrs']['label'];
 		}
-		$html .= '</a></div>';
+		$html .= '</a>';
 
 		if ( count( (array) $menu_item['innerBlocks'] ) > 0 ) {
-			$html .= build_navigation_menu_html( $menu_item );
+			$html .= build_navigation_menu_html( $menu_item, $bg_css, $text_css, $bg_styles, $text_styles );
 		}
 
 		$html .= '</li>';

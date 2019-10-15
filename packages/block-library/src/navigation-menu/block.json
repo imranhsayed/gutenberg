@@ -19,6 +19,14 @@
 			"type": "string"
 		},
 
+		"backgroundColorValue": {
+			"type": "string"
+		},
+
+		"textColorValue": {
+			"type": "string"
+		},
+
 		"customBackgroundColor": {
 			"type": "string"
 		},

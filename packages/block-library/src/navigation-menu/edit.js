@@ -57,13 +57,6 @@ function NavigationMenu( {
 		[ pages ]
 	);
 
-	const colorsSelectorProps = {
-		backgroundColor,
-		textColor,
-		setBackgroundColor,
-		setTextColor,
-	};
-
 	const navigationMenuStyles = {};
 	if ( textColor.color ) {
 		navigationMenuStyles[ '--color-menu-link' ] = textColor.color;
@@ -82,14 +75,30 @@ function NavigationMenu( {
 		}
 	);
 
-	// Store colors CSS classes if they exist.
-	if ( backgroundColor.class ) {
-		setAttributes( { backgroundColorCSSClass: backgroundColor.class } );
-	}
+	/**
+	 * Set the color type according to the given values.
+	 * It propagate the color values into the attributes object.
+	 *
+	 * @param {string} colorType Color type to be applied.
+	 * @param {string} value     Color value to apply to the color type.
+	 */
+	const setColorType = ( { colorType, value } ) => {
+		switch ( colorType ) {
+		    case 'backgroundColor':
+		        setBackgroundColor( value );
+		        setAttributes( { [ 'backgroundColorValue' ]: value } );
+		        break;
 
-	if ( textColor.class ) {
-		setAttributes( { textColorCSSClass: textColor.class } );
-	}
+			case 'textColor':
+				setTextColor( value );
+				setAttributes( { [ 'textColorValue' ]: value } );
+				break;
+		}
+	};
+
+	// Set/Unset colors CSS classes.
+	setAttributes( { backgroundColorCSSClass: backgroundColor.class ? backgroundColor.class : null } );
+	setAttributes( { textColorCSSClass: textColor.class ? textColor.class : null } );
 
 	return (
 		<Fragment>
@@ -100,7 +109,9 @@ function NavigationMenu( {
 				<BlockColorsStyleSelector
 					style={ navigationMenuStyles }
 					className={ navigationMenuClasses }
-					{ ...colorsSelectorProps }
+					backgroundColor={ backgroundColor }
+					textColor={ textColor }
+					onColorChange={ setColorType }
 				/>
 			</BlockControls>
 			{ navigatorModal }
@@ -110,9 +121,7 @@ function NavigationMenu( {
 				>
 					<CheckboxControl
 						value={ attributes.automaticallyAdd }
-						onChange={ ( automaticallyAdd ) => {
-							setAttributes( { automaticallyAdd } );
-						} }
+						onChange={ ( automaticallyAdd ) => setAttributes( { automaticallyAdd } ) }
 						label={ __( 'Automatically add new pages' ) }
 						help={ __( 'Automatically add new top level pages to this menu.' ) }
   					/>

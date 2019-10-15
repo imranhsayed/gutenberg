@@ -2,6 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
+import { noop } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -55,13 +56,15 @@ const renderToggle = ( style ) => ( { onToggle, isOpen } ) => {
 	);
 };
 
-const renderContent = ( { backgroundColor, textColor, setBackgroundColor, setTextColor } ) => ( ( { isOpen, onToggle, onClose } ) => {
+const renderContent = ( { backgroundColor, textColor, onColorChange = noop } ) => ( ( { isOpen, onToggle, onClose } ) => {
+	const setColor = colorType => value => onColorChange( { colorType, value } );
+
 	return (
 		<>
 			<div className="color-palette-controller-container">
 				<ColorPaletteControl
 					value={ backgroundColor.color }
-					onChange={ setBackgroundColor }
+					onChange={ setColor( 'backgroundColor' ) }
 					label={ __( 'Background Color' ) }
 				/>
 			</div>
@@ -69,7 +72,7 @@ const renderContent = ( { backgroundColor, textColor, setBackgroundColor, setTex
 			<div className="color-palette-controller-container">
 				<ColorPaletteControl
 					value={ textColor.color }
-					onChange= { setTextColor }
+					onChange={ setColor( 'textColor' ) }
 					label={ __( 'Text Color' ) }
 				/>
 			</div>

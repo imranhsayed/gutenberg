@@ -16,39 +16,40 @@
  */
 function render_block_navigation_menu( $attributes, $content, $block ) {
 	// Add CSS classes and inline styles.
-	$cssClasses = [ 'wp-block-navigation-menu' ];
-	$inlineStyles = [];
-
+	$css_classes = [];
 	if ( array_key_exists('backgroundColor', $attributes ) ) {
-		$cssClasses[] = 'has-background-color';
-		$inlineStyles[] = "background-color: ${attributes['backgroundColor']};";
+		$css_classes[] = 'has-background-color';
 	}
 
 	if ( array_key_exists('textColor', $attributes ) ) {
-		$cssClasses[] = 'has-text-color';
-		$inlineStyles[] = "color: ${attributes['textColor']};";
+		$css_classes[] = 'has-text-color';
 	}
 
 	if ( array_key_exists('backgroundColorCSSClass', $attributes ) ) {
-		$cssClasses[] = $attributes['backgroundColorCSSClass'];
+		$css_classes[] = $attributes['backgroundColorCSSClass'];
 	}
 
 	if ( array_key_exists('textColorCSSClass', $attributes ) ) {
-		$cssClasses[] = $attributes['textColorCSSClass'];
+		$css_classes[] = $attributes['textColorCSSClass'];
 	}
 
+	$inline_styles = [];
 	if ( array_key_exists('customBackgroundColor', $attributes ) ) {
-		$inlineStyles[] = "background-color: ${attributes['customBackgroundColor']};";
+		$inline_styles[] = "background-color: ${attributes['customBackgroundColor']};";
+	} elseif ( array_key_exists('backgroundColorValue', $attributes ) ) {
+		$inline_styles[] = "background-color: ${attributes['backgroundColorValue']};";
 	}
 
-	if ( array_key_exists('customTextColor', $attributes ) ) {
-		$inlineStyles[] = "color: ${attributes['customTextColor']};";
+	if ( array_key_exists('textColorValue', $attributes ) ) {
+		$inline_styles[] = "color: ${attributes['textColorValue']};";
+	} elseif ( array_key_exists('customTextColor', $attributes ) ) {
+		$inline_styles[] = "color: ${attributes['customTextColor']};";
 	}
 
-	$cssClasses = implode( ' ', $cssClasses );
-	$inlineStyles = implode( ' ', $inlineStyles );
+	$css_classes = implode( ' ', $css_classes );
+	$inline_styles = implode( ' ', $inline_styles );
 
-	return '<nav class="' . $cssClasses . '" style="' . $inlineStyles . '">' . build_navigation_menu_html( $block ) . '</nav>';
+	return '<nav class="wp-block-navigation-menu">' . build_navigation_menu_html( $block, $css_classes, $inline_styles ) . '</nav>';
 }
 
 /**
@@ -58,10 +59,11 @@ function render_block_navigation_menu( $attributes, $content, $block ) {
  *
  * @return string Returns  an HTML list from innerBlocks.
  */
-function build_navigation_menu_html( $block ) {
+function build_navigation_menu_html( $block, $css_classes, $inline_styles ) {
 	$html = '';
 	foreach ( (array) $block['innerBlocks'] as $key => $menu_item ) {
-		$html .= '<li class="wp-block-navigation-menu-item"><a class="wp-block-navigation-menu-link"';
+		$css_classes = "wp-block-navigation-menu-item ${css_classes}";
+		$html .= "<li style='${inline_styles}'><div class='${css_classes}'><a class='wp-block-navigation-menu-link'";
 		if ( isset( $menu_item['attrs']['destination'] ) ) {
 			$html .= ' href="' . $menu_item['attrs']['destination'] . '"';
 		}
@@ -72,7 +74,7 @@ function build_navigation_menu_html( $block ) {
 		if ( isset( $menu_item['attrs']['label'] ) ) {
 			$html .= $menu_item['attrs']['label'];
 		}
-		$html .= '</a>';
+		$html .= '</a></div>';
 
 		if ( count( (array) $menu_item['innerBlocks'] ) > 0 ) {
 			$html .= build_navigation_menu_html( $menu_item );

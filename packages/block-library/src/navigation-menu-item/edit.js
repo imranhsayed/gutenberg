@@ -86,8 +86,11 @@ function NavigationMenuItemEdit( {
 			</div>
 		);
 	} else {
-		content = attributes.label;
+		content = <div className="wp-block-navigation-menu-item__container">
+			{ attributes.label }
+		</div>;
 	}
+
 	return (
 		<Fragment>
 			<InspectorControls>

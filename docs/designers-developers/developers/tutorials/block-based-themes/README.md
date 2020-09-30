@@ -241,6 +241,7 @@ Add the following global presets to the experimental-theme.json file:
 			],
 		},
 	},
+}
 ```
 
 This code generates the following variables:
